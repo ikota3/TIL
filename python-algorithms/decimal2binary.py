@@ -2,7 +2,7 @@
 def decimal_to_binary(decimal_number):
     result = ''
     if decimal_number == 0:
-        result = 0
+        result = '0'
         return result
 
     while decimal_number > 0:
