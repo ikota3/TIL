@@ -7,10 +7,9 @@ def print_leap_year():
         if year % 4 == 0 and year % 100 != 0:
             print(year, end=' ')
 
+
 # 問2
 # 1868年から2020以下に対応の西暦 -> 元号変換
-
-
 def year_to_era(year):
     era = 0
     result = ''
