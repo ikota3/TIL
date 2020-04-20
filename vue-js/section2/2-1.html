@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+        <p>{{ message }}</p>
+        <p>{{ number + 5 }}</p>
+        <p>{{ ok ? 'YES' : 'NO'}}</p>
+        <p>{{ sayHi() }}</p>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'HelloWorld!',
+                number: 10,
+                ok: false
+            },
+            methods: {
+                sayHi: function () {
+                    return 'Hello!';
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
