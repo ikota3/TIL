@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+        <p>現在{{ number }}回クリックされています</p>
+        <!-- <button v-on:click="number++">Count up</button> -->
+        <!-- <button v-on:click="countUp">Count up</button> -->
+        <!-- <button v-on:click="reset">Reset</button> -->
+        <button v-on:click="countUp()">Count up</button>
+        <button v-on:click="reset()">Reset</button>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                number: 0
+            },
+            methods: {
+                countUp() {
+                    this.number++;
+                },
+                reset() {
+                    this.number = 0;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
