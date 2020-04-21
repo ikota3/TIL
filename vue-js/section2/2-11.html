@@ -15,7 +15,7 @@
         <p v-on:mousemove="changeMousePosition($event, 3)">
             マウスを載せてください
             <span v-on:mousemove.stop>反応しないでください</span>
-            <a v-on:click.prevent:mousemove.stop href="https://google.com">Google</a>
+            <a v-on:click.prevent href="https://google.com">Google</a>
         </p>
         <p>X: {{ x }}, Y: {{ y }}</p>
     </div>
