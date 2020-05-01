@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <div id="app">
+      <h1>Hello! {{ name }}</h1>
+      <button @click="name = 'Changed'">Change name</button>
+      <button @click="destroy">Destroy instance</button>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          name: "Tarou",
+        },
+        beforeCreate() {
+          console.log("BeforeCreate");
+        },
+        created() {
+          console.log("Created");
+        },
+        beforeMount() {
+          console.log("BeforeMount");
+        },
+        mounted() {
+          console.log("Mounted");
+        },
+        beforeUpdate() {
+          console.log("BeforeUpdate");
+        },
+        updated() {
+          console.log("Updated");
+        },
+        beforeDestroy() {
+          console.log("BeforeDestroy");
+        },
+        destroyed() {
+          console.log("Destroyed");
+        },
+        methods: {
+          destroy() {
+            this.$destroy();
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
