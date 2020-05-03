@@ -132,3 +132,4 @@ dmypy.json
 .vscode/
 .env
 vuejs-practice/
+cpp/all.h.gch
