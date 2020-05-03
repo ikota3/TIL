@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿// g++ -include all.h -o helloWorld helloWorld.cpp
+// #include <iostream>
 
 int main()
 {
