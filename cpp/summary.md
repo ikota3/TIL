@@ -34,9 +34,9 @@ GCC ではヘッダーファイルを事前にコンパイルする機能があ�
 事前にコンパイルしたヘッダーファイルをコンパイル済みヘッダー(`precompiled header`)という
 
 ヘッダーファイルをコンパイル済みヘッダーにするには、以下で出来る  
-ヘッダーファイルが、 C++ で書かれていることを示すオプション `-x c++header` を与える
+ヘッダーファイルが、 C++ で書かれていることを示すオプション `-x c++-header` を与える
 
-`$ g++ -std=c++17 -Wall --pedantic-errors -x c++header -o headerFileName.h.gch headerFileName.h`
+`$ g++ -std=c++17 -Wall --pedantic-errors -x c++-header -o headerFileName.h.gch headerFileName.h`
 
 GCC ではヘッダーファイルを扱うとき、同名の `.gch` ファイルが存在するときは、コンパイル済みヘッダーファイルとしてそれを扱い、ヘッダーファイルのコンパイル処理を省略する  
 ただ、コンパイル済みヘッダーは一回のコンパイルに、一つしか使うことができないため、そのヘッダーファイルに、他のヘッダーファイルをすべて記述しなければならない
