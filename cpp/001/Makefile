@@ -1,9 +1,9 @@
 gcc_options = -std=c++17 -Wall --pedantic-errors
 
-program: main.cpp all.h all.h.gch
-	g++ $(gcc_options) -include all.h -o $@ $<
+program: main.cpp ../all.h all.h.gch
+	g++ $(gcc_options) -include ../all.h -o $@ $<
 
-all.h.gch: all.h
+all.h.gch: ../all.h
 	g++ $(gcc_options) -x c++-header -o $@ $<
 
 run: program

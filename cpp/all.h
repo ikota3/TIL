@@ -1,4 +1,4 @@
-﻿#include <cstddef>
+#include <cstddef>
 #include <limits>
 #include <climits>
 #include <cfloat>
