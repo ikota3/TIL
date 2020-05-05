@@ -3,6 +3,9 @@
 ### 標準出力
 
 `std::cout` は、標準出力を担うライブラリ  
+`std` は、 `standard`で、  
+`cout` は、 `character output`という意味
+
 `<<` は、 `operator <<` という演算子
 
 ```cpp
