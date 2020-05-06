@@ -36,7 +36,7 @@ int main()
 }
 ```
 
-```bash
+```shell
 $ make run file=003.cpp
 g++ -std=c++17 -Wall --pedantic-errors -include ../all.h -o program 003.cpp
 ./program
@@ -59,7 +59,7 @@ int main()
 }
 ```
 
-```bash
+```shell
 $ make run file=004.cpp
 g++ -std=c++17 -Wall --pedantic-errors -include ../all.h -o program 004.cpp
 ./program
@@ -81,9 +81,38 @@ int main()
 }
 ```
 
-```bash
+```shell
 $ make run file=005.cpp
 ./program
 true
 true
+```
+
+### リダイレクト
+
+`>` や `>>`、`<` や `<<` を使って、 `標準出力` を リダイレク先に `標準入力` として渡すことが出来る
+
+```shell
+# "Test" 文字列を、test.txtを新規作成し、書き込み
+$ echo "Test" > test.txt
+$ cat test.txt
+>> Test
+
+# "Test" 文字列を、test.txtに追記 なかったら新規作成
+$ echo "Test" >> test.txt
+$ cat test.txt
+>> Test
+>> Test
+```
+
+### パイプ
+
+リダイレクトと似たようなものだが、より直感的に操作できるかもしれない?  
+`|` で繋げた先に、`|` の前の標準出力を渡す
+
+```shell
+$ echo \
+> "af
+> to" | grep "to"
+to
 ```
