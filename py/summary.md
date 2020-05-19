@@ -318,3 +318,59 @@ def trace(func):
 def print_key_value(key, value):
   return f'{key}: {value}'
 ```
+
+`functools.wraps(func)` を使うことで、デコレートされた関数の `__name__` や `__doc__` 属性にアクセスすることが出来る
+
+これがないと、デコレータ自身の属性にアクセスしてしまう
+
+```python
+import functools
+
+def uppercase(func):
+  # デコレートされた関数自体を渡す
+  @functools.wraps(func)
+  def wrapper():
+    return func().upper()
+  return wrapper
+
+@uppercase
+def greet():
+  """
+  DOC STRINGS
+  """
+  return 'Hello!'
+
+print(greet.__name__) # greet
+print(greet.__doc__) # DOC STRINGS
+```
+
+## アンパック
+
+`*` や `**` 演算子は可変長の引数を受け取ることが出来、リストやタプル、ディクショナリなどのイテラブルなものからアンパックすることが出来る
+
+```python
+def print_vector(x, y, z):
+  print(f'<{x}, {y}, {z}>')
+
+print_vector(1, 0, 1) # <1, 0, 1>
+
+# リスト、タプルがアンパックされ、それぞれの要素が、x/y/zに入る
+print_vector(*[1, 0, 1]) # <1, 0, 1>
+print_vector(*(1, 0, 1)) # <1, 0, 1>
+
+# ジェネレータ式でも出来る
+print_vector(*(i for i in range(3))) # <0, 1, 2>
+
+# ** 演算子でkeyで適用させる
+print_vector(**{'y': 1, 'x': 3, 'z': 2}) # <3, 1, 2>
+# *演算子でディクショナリを適用することもできるが、
+# ディクショナリは順番が保証されないため、ランダムな順序で適用されてしまう
+print_vector(*{'y': 1, 'x': 3, 'z': 2}) # <?, ?, ?>
+```
+
+## return None
+
+Python では暗黙的に、全ての関数に対して最後に `return None` が適用される  
+明示的に`return None` 、`return`を書いたり、 return 自体を書かなくても、最終的には、`None` が返されるようになっている
+
+明示的に書いても良いケースはあるだろうが、結局は Python が自動的に return 文を補完してくれるので、読みやすさを考慮すると、書かなくてもいいだろう

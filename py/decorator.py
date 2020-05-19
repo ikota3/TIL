@@ -1,4 +1,7 @@
-﻿def uppercase(func):
+﻿import functools
+
+
+def uppercase(func):
     def wrapper():
         return func().upper()
     return wrapper
@@ -67,3 +70,21 @@ def print_key_value(key, value, **kwargs):
 # TRACE: calling print_key_value() with ('KEY', 'VALUE'), {'example': 'test'}
 # TRACE: print_key_value() with ('KEY', 'VALUE'), {'example': 'test'} Returned KEY: VALUE
 print_key_value('KEY', 'VALUE', example='test')
+
+
+def uppercase_(func):
+    @functools.wraps(func)
+    def wrapper():
+        return func().upper()
+    return wrapper
+
+
+@uppercase_
+def greet_():
+    """
+    DOC STRINGS
+    """
+    return 'Hello!'
+
+
+print(greet_.__name__, greet_.__doc__)
