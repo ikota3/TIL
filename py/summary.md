@@ -374,3 +374,59 @@ Python では暗黙的に、全ての関数に対して最後に `return None` �
 明示的に`return None` 、`return`を書いたり、 return 自体を書かなくても、最終的には、`None` が返されるようになっている
 
 明示的に書いても良いケースはあるだろうが、結局は Python が自動的に return 文を補完してくれるので、読みやすさを考慮すると、書かなくてもいいだろう
+
+## 比較演算子
+
+`==演算子` は、オブジェクトの中身が同一かを確かめる  
+`is演算子` は、オブジェクト自身(アドレス)が同一かを確かめる
+
+```python
+# リストの場合、mutableのため、=で代入すると参照元自体は同じ扱いとなる
+a = [1, 2, 3]
+b = a
+print(a == b) # True 中身が同じ
+print(a is b) # True オブジェクトが同じ
+# 新しくインスタンスを作成しているので、アドレス自体が書き変わる
+c = list(a)
+print(a == c) # True 中身が同じ
+print(a is c) # False オブジェクトが違う
+```
+
+## オブジェクトの情報を表示させるようにする
+
+`__str__`メソッドを実装することで、何らかの方法でオブジェクトを文字列に変換しようとしたときに、呼び出される
+
+`__repr__` は一見して`__str__`とほぼ同じようなメソッドに見えるが、動きが少しばかり異なる  
+リストやディクショナリなどを表示したいとき、`__repr__` が呼び出される
+
+明示的に `str()` や `repr()` を呼び出すことでどちらのメソッドで文字列表現が出来るかを決めることが出来る
+
+`__str__` は読み方が優先的な実装を行い、`__repr__` はデバッグ支援ツールのような、詳細な情報を文字列で表現するような実装を行う  
+`__str__` がないときは、`__repr__`が呼び出されるため、最低限`__repr__`だけは実装するようにしよう
+
+```python
+class SomeClass:
+  def __init__(self, name):
+    self.name = name
+
+  def __str__(self):
+    return f'from __str__ {self.name}'
+
+  def __repr__(self):
+    return f'from __repr__ {self.name}'
+
+obj = SomeClass('Tom')
+print(obj) # from __str__ Tom
+print([obj]) # from __repr__ Tom
+```
+
+## オリジナルの例外を作る
+
+```python
+class TooShortError(ValueError):
+  pass
+
+def validate_name(name):
+  if len(name) < 10:
+    raise TooShortError(name)
+```
