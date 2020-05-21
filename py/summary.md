@@ -430,3 +430,31 @@ def validate_name(name):
   if len(name) < 10:
     raise TooShortError(name)
 ```
+
+上記のような感じでカスタム例外を作成できる  
+`ValueError` や `Exception` 継承するような例外クラスを作成するのもいいが、基底となる例外クラスを作成し、それを継承するほうが分かりやすさにも影響するだろう
+
+```python
+class BaseValidationError(ValueError):
+  pass
+
+class TooShortError(BaseValidationError):
+  pass
+
+class NotNumericError(BaseValidationError):
+  pass
+```
+
+`BaseValidationError` という名前で基底となるクラスを作成し、各エラー別のクラスで基底クラスを継承することで綺麗な例外構造が出来上がる
+
+こうすることで、`try-catch`で`BaseValidationError`という名前で各エラーを書かなくても catch することができる  
+だがこの方法だと、本来 catch できないエラーも catch するという意味でもあるので、かえってデバッグしにくい点もある
+
+```python
+try:
+  validate(name)
+except BaseValidationError as e:
+  handle_validation_error(e)
+```
+
+## オブジェクトのディープコピーとシャローコピー
