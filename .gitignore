@@ -136,3 +136,4 @@ all.h.gch
 program
 node_modules/
 package-lock.json
+notes.json
