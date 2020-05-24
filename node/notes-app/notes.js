@@ -27,10 +27,6 @@ const loadNotes = () => {
   }
 };
 
-const getNote = () => {
-  return "Fetching notes...";
-};
-
 /**
  * Add Handler
  * @param {string} title
@@ -81,6 +77,10 @@ const listNotes = () => {
   });
 };
 
+/**
+ * Read Handler
+ * @param {string} title
+ */
 const readNote = (title) => {
   note = loadNotes().find((note) => {
     return note.title === title;
@@ -95,7 +95,6 @@ const readNote = (title) => {
 };
 
 module.exports = {
-  getNote,
   addNote,
   removeNote,
   listNotes,
