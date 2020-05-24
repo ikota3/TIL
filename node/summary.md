@@ -15,6 +15,12 @@ REPL モードで起動
 ファイル名を指定して起動  
 `node filename.js`
 
+## Debug Mode
+
+ファイルに `debugger` の一文を足し、  
+そのうえで下記のコマンドを実行すると、`debugger` が追加されたところで処理が止まる  
+`node inspect filename.js`
+
 ## NPM
 
 - `npm init`
@@ -72,4 +78,62 @@ fs.writeFileSync(filename, "Something to write\n");
 
 // Append the content to the selected file
 fs.appendFileSync(filename, "Append!");
+```
+
+## JSON
+
+- JavaScript オブジェクト -> 文字列  
+  `JSON.stringify(object)`
+
+- 文字列 -> JavaScript オブジェクト  
+  `JSON.parse(object)`
+
+```js
+const book = {
+  title: "Hello World",
+  author: "Author Name",
+};
+const bookJSON = JSON.stringify(book); // JSON object to string object
+
+const bookParse = JSON.parse(bookJSON); // String object to JSON object
+```
+
+## Arrow Function
+
+```js
+let func = function () {
+  console.log("Normal function");
+};
+func();
+
+func = () => {
+  console.log("Arrow function");
+};
+func();
+
+const obj = {
+  name: "Bob",
+  func: function () {
+    console.log(this.name); // Bob
+  },
+  func1: () => {
+    console.log(this.name); // undefined
+  },
+  func2() {
+    console.log(this.name); // Bob
+    const func3 = () => {
+      console.log(this.name); // Bob
+    };
+    func3();
+
+    const func4 = function () {
+      console.log(this.name); // undefined
+    };
+    func4();
+  },
+};
+
+obj.func();
+obj.func1();
+obj.func2();
 ```
