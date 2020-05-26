@@ -137,3 +137,117 @@ obj.func();
 obj.func1();
 obj.func2();
 ```
+
+## Object Property Shorthand and destructuring
+
+オブジェクトを定義するとき、key を変数名と同じにしたいときは、変数名単一で定義することが出来る
+
+```js
+const name = "Tom";
+const objLong = {
+  name: name,
+};
+const objShort = {
+  name,
+};
+```
+
+オブジェクトのプロパティから一つずつ選択して、変数に代入するのもいいが、複数のプロパティを複数の変数に一気に代入することが出来る
+
+```js
+const name = "Tom";
+const age = 26;
+const sex = "Female";
+const user = {
+  name,
+  age,
+  sex,
+};
+
+const userName = user.name; // little bit long
+const { name, sex } = user;
+console.log(name, sex); // Tom Female
+
+const { age: userAge } = user; // Define other name in the user property
+console.log(userAge); // 26
+
+const { hobby = "Movie" } = user; // Setting a default value for when its undefined
+console.log(hobby); // Movie
+
+// Using it in anonymous function
+const func = ({ name }) => {
+  console.log(name);
+};
+func(user); // Tom
+
+// TypeError: Cannot destructure property `name` of 'undefined' or 'null'.
+func(undefined);
+func(null);
+
+// Set default value to empty object,
+// so if its undefined or null, the destructure won't be happen and the name variable will be undefined.
+const funcFix = ({ name } = {}) => {
+  console.log(name); // Tom
+};
+funcFix(undefined); // undefined
+funcFix(null); // undefined
+funcFix(user); // Tom
+```
+
+## Asynchronous
+
+```js
+setTimeout(() => {
+  console.log('0 second.')
+}, 0);
+
+setTimeout(() => {
+  console.log('2 second.')
+}, 2000);
+
+console.log("Hello");
+
+// output
+Hello
+0 second.
+2 second.
+```
+
+`setTimeout` は第 1 引数に実行したい関数、第 2 引数に何ミリ秒後かを記述する非同期処理関数
+
+`2 second.`が最後に表示されているのは何となく理解はできるが、`0 second.`が直後に実行されず、なぜ `Hello` が先に実行されているか?  
+関数は呼び出し時に `Call Stack` に 追加され、実行が終わったら除去されるが、`setTimeout` 関数は `Callback Queue` に入り、`Call Stack` に最初に入る `main` スタック(main 関数)が除去されるまで待ち続け、終わり次第 `Event Loop` によって `Call Stack` に追加されるようになっている  
+なので、`main` スタックが終了するタイミングである、`console.log("Hello");` が終わった時点で、`setTimeout` が `Call Stack` に入り、実行された
+
+## Design Pattern
+
+定義した関数に、匿名関数を渡し、その関数を実行してもらう  
+入力値を渡し、出力値を匿名関数に引き渡す
+
+```js
+const func = (arg, callback) => {
+  // if arg is falsy
+  if (!arg) {
+    callback("This is not the correct arg. Try again.", undefined);
+    return;
+  }
+  const result = something(arg);
+  callback(undefined, result);
+};
+
+// This call print the errorMessage
+func(false, (errorMessage, result) => {
+  if (errorMessage) {
+    return console.log(errorMessage);
+  }
+  console.log(result);
+});
+
+// This call print the result
+func("argument", (errorMessage, result) => {
+  if (errorMessage) {
+    return console.log(errorMessage);
+  }
+  console.log(result);
+});
+```

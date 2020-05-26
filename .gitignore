@@ -137,3 +137,5 @@ program
 node_modules/
 package-lock.json
 notes.json
+token.txt
+playground/
