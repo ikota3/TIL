@@ -139,3 +139,4 @@ package-lock.json
 notes.json
 token.txt
 playground/
+*.png
