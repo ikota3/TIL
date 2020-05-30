@@ -251,3 +251,55 @@ func("argument", (errorMessage, result) => {
   console.log(result);
 });
 ```
+
+## Express
+
+Express は、Web アプリケーションを作成するためのフレームワーク  
+これを使うことで、CRUD アプリを作ることが出来る
+
+```js
+const express = require("express");
+
+// インスタンスを作成
+const app = express();
+
+// 設定を行う
+// CSSファイルやJSファイルなどの静的なファイルを格納するフォルダを指定する
+app.use(express.static("pathToStaticDirectory"));
+// HBSを使用したHTML描画を行うことを指定する
+app.set("view engine", "hbs");
+
+// VIEW(HTMLやHBSなど)を置く場所
+app.set("views", "pathToViewsDirectory");
+
+// URLマッピング
+// localhost:8080
+app.get("", (req, res) => {
+  console.log(req.query.key); // value from localhost:8080?key=value
+  res.render("fileNameExcludingExtension", {
+    title: "passSomethingToTheView",
+  });
+});
+
+// 上で定義したlocalhost:8080以外のURLに対して以下が適用される
+app.get("*", (req, res) => {
+  res.send("This url is not available.");
+});
+
+// 8080でポートを開く
+app.listen(8080, () => {
+  console.log("Listening on localhost:8080");
+});
+```
+
+## HBS
+
+`{{ variable }}` で変数を展開できる  
+`{{>partialFileNameExcludingExtension}}` でヘッダーファイルやフッターファイルなどの変わらない表示内容を一つのファイルにし、それぞれのファイルで読み込む形にするとき、コンテンツを読み込むことが出来る  
+ただ、`Partial` を使うときは、JavaScript 側で以下の設定を行わないといけない
+
+```js
+const hbs = require("hbs");
+
+hbs.registerPartials("pathToPartialFilesDirectory");
+```
