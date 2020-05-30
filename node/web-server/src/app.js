@@ -1,6 +1,8 @@
 const path = require("path");
 const express = require("express");
 const hbs = require("hbs");
+const geocode = require("./geocode");
+const forecast = require("./forecast");
 
 const app = express();
 // Static directory path
@@ -55,7 +57,39 @@ app.get("/help", (req, res) => {
  * WEATHER
  */
 app.get("/weather", (req, res) => {
-  res.send({ forecast: "It is Sunny", location: "Tokyo" });
+  if (!req.query.address) {
+    return res.send({
+      error: "You must provide a address.",
+    });
+  }
+
+  geocode(
+    req.query.address,
+    (error, { latitude, longitude, location } = {}) => {
+      if (error) {
+        return res.send({
+          error,
+        });
+      }
+      forecast(
+        latitude,
+        longitude,
+        (error, { weather_description, temperature, feelslike } = {}) => {
+          if (error) {
+            return res.send({
+              error,
+            });
+          }
+
+          res.send({
+            forecast: `It's ${weather_description}. It is currently ${temperature} degrees out. It feels like ${feelslike} degrees.`,
+            location: location,
+            address: req.query.address,
+          });
+        }
+      );
+    }
+  );
 });
 
 /**
