@@ -48,7 +48,10 @@ REPL モードで起動
 #### require
 
 `require` を使って他のファイルを読み込むことが出来る  
-`require("path")` を使うことで、そのファイルの `module.exports` で設定している値らが戻り値として返ってくる
+`require("path")` を使うことで、そのファイルの `module.exports` で設定している値らが戻り値として返ってくる  
+`{ key: value }` などのオブジェクトを登録することもできる
+
+また、パッケージを使うときは、パッケージ名のみで指定する
 
 ```js
 // world.js
@@ -60,8 +63,6 @@ module.exports = returnValue;
 // hello.js
 const returnValue = require("./world.js"); // world
 ```
-
-パッケージを使うときは、パッケージ名のみで指定する
 
 #### FileSystem
 
@@ -78,6 +79,58 @@ fs.writeFileSync(filename, "Something to write\n");
 
 // Append the content to the selected file
 fs.appendFileSync(filename, "Append!");
+```
+
+#### Express
+
+Express は、Web アプリケーションを作成するためのフレームワーク  
+これを使うことで、CRUD アプリを作ることが出来る
+
+```js
+const express = require("express");
+
+// インスタンスを作成
+const app = express();
+
+// 設定を行う
+// CSSファイルやJSファイルなどの静的なファイルを格納するフォルダを指定する
+app.use(express.static("pathToStaticDirectory"));
+// HBSを使用したHTML描画を行うことを指定する
+app.set("view engine", "hbs");
+
+// VIEW(HTMLやHBSなど)を置く場所
+app.set("views", "pathToViewsDirectory");
+
+// URLマッピング
+// localhost:8080
+app.get("", (req, res) => {
+  console.log(req.query.key); // value from localhost:8080?key=value
+  res.render("fileNameExcludingExtension", {
+    title: "passSomethingToTheView",
+  });
+});
+
+// 上で定義したlocalhost:8080以外のURLに対して以下が適用される
+app.get("*", (req, res) => {
+  res.send("This url is not available.");
+});
+
+// 8080でポートを開く
+app.listen(8080, () => {
+  console.log("Listening on localhost:8080");
+});
+```
+
+#### HBS
+
+`{{ variable }}` で変数を展開できる  
+`{{>partialFileNameExcludingExtension}}` でヘッダーファイルやフッターファイルなどの変わらない表示内容を一つのファイルにし、それぞれのファイルで読み込む形にするとき、コンテンツを読み込むことが出来る  
+ただ、`Partial` を使うときは、JavaScript 側で以下の設定を行わないといけない
+
+```js
+const hbs = require("hbs");
+
+hbs.registerPartials("pathToPartialFilesDirectory");
 ```
 
 ## JSON
@@ -252,54 +305,65 @@ func("argument", (errorMessage, result) => {
 });
 ```
 
-## Express
+## Heroku
 
-Express は、Web アプリケーションを作成するためのフレームワーク  
-これを使うことで、CRUD アプリを作ることが出来る
+https://devcenter.heroku.com/articles/heroku-cli#download-and-install
 
-```js
-const express = require("express");
+- Installing on ubuntu
 
-// インスタンスを作成
-const app = express();
+  ```bash
+  sudo snap install --classic heroku
+  ```
 
-// 設定を行う
-// CSSファイルやJSファイルなどの静的なファイルを格納するフォルダを指定する
-app.use(express.static("pathToStaticDirectory"));
-// HBSを使用したHTML描画を行うことを指定する
-app.set("view engine", "hbs");
+- Checking version
 
-// VIEW(HTMLやHBSなど)を置く場所
-app.set("views", "pathToViewsDirectory");
+  ```bash
+  heroku -v
+  ```
 
-// URLマッピング
-// localhost:8080
-app.get("", (req, res) => {
-  console.log(req.query.key); // value from localhost:8080?key=value
-  res.render("fileNameExcludingExtension", {
-    title: "passSomethingToTheView",
+- Logging in to heroku cli
+
+  ```bash
+  heroku login
+  ```
+
+- Adding github ssh public key to heroku
+
+  ```bash
+  heroku keys:add ~/.ssh/${filename}.pub
+  ```
+
+- Create a heroku application
+
+  ```bash
+  heroku create "applicationNameWhichIsUnique"
+  ```
+
+- Setting up stating command
+
+  package.json(Using node)
+
+  ```json
+  {
+    "scripts": {
+      "start": "node src/app.js"
+    }
+  }
+  ```
+
+  Because of heroku running `npm run start`, you have to set up a command to `package.json`.
+
+- Change port number
+
+  ```js
+  // heroku only for accessing PORT ENVIRONMENT variable
+  const port = process.env.PORT || 8080;
+  app.listen(port, () => {
+    console.log(`listening on ${port}`);
   });
-});
+  ```
 
-// 上で定義したlocalhost:8080以外のURLに対して以下が適用される
-app.get("*", (req, res) => {
-  res.send("This url is not available.");
-});
-
-// 8080でポートを開く
-app.listen(8080, () => {
-  console.log("Listening on localhost:8080");
-});
-```
-
-## HBS
-
-`{{ variable }}` で変数を展開できる  
-`{{>partialFileNameExcludingExtension}}` でヘッダーファイルやフッターファイルなどの変わらない表示内容を一つのファイルにし、それぞれのファイルで読み込む形にするとき、コンテンツを読み込むことが出来る  
-ただ、`Partial` を使うときは、JavaScript 側で以下の設定を行わないといけない
-
-```js
-const hbs = require("hbs");
-
-hbs.registerPartials("pathToPartialFilesDirectory");
-```
+- Push to heroku
+  ```bash
+  git push heroku master
+  ```
