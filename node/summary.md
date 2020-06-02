@@ -367,3 +367,42 @@ https://devcenter.heroku.com/articles/heroku-cli#download-and-install
   ```bash
   git push heroku master
   ```
+
+## MongoDB
+
+### SQL and NO SQL
+
+- SQL
+
+  - The data is stored in a table.  
+    Each data is Row and the data identifiers are called Column.
+    |id|name|email|password|
+    |:-:|:-:|:-:|:-:|
+    |12|Tom|example@email.com|1234|
+
+- No SQL
+  - The data is stored in a Collection.  
+    Each data is a Document and the data identifiers are called Field.
+    ```json
+    [
+      {
+        "id": "12",
+        "name": "Tom",
+        "email": "example@email.com",
+        "password": "1234"
+      }
+    ]
+    ```
+
+### Run
+
+- PowerScript
+  ```ps1
+  > C:\MongoDB\bin\mongod.exe --dbpath="C:\MongoDB_data\"
+  ```
+
+### GUI Tool
+
+- Robo 3T
+  - Checking connection
+    - `db.version()`
