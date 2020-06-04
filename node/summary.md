@@ -406,3 +406,147 @@ https://devcenter.heroku.com/articles/heroku-cli#download-and-install
 - Robo 3T
   - Checking connection
     - `db.version()`
+
+### Setting connection
+
+```js
+// const mongodb = require("mongodb");
+// const MongoClient = mongodb.MongoClient;
+const { MongoClient } = require("mongodb");
+
+// mongodb://IP_ADDRESS:PORT
+const url = "mongodb://127.0.0.1:27017";
+
+MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
+  if (error) {
+    return console.log("Unable to connect to database.");
+  }
+
+  console.log("Connected successfully.");
+
+  const name = "test";
+  const db = client.db(name);
+});
+```
+
+### INSERT
+
+```js
+// insertOne (Insert one document only)
+db.collection("users").insertOne(
+  {
+    name: "Tom",
+    age: 20,
+  },
+  (error, result) => {
+    if (error) {
+      return console.log("Unable to insert user.");
+    }
+
+    // result.ops returns inserted details
+    console.log(result.ops); // { name: "Tom", age: 20, id: ######### }
+  }
+);
+
+// insertMany (Insert multiple document at once)
+db.collection("users").insertMany(
+  [
+    {
+      description: "desc1",
+      completed: true,
+    },
+    {
+      description: "desc2",
+      completed: false,
+    },
+  ],
+  (error, result) => {
+    if (error) {
+      return console.log("Unable to insert user.");
+    }
+
+    /**
+     *[
+     *  {
+     *    description: 'desc1',
+     *    completed: true,
+     *    _id: 5ed8f568c95b3930ac7dc7ce
+     *  },
+     *  {
+     *    description: 'desc2',
+     *    completed: false,
+     *    _id: 5ed8f568c95b3930ac7dc7cf
+     *  }
+     *]
+     */
+    console.log(result.ops);
+  }
+);
+```
+
+### ObjectID
+
+MongoDB では，デフォルトで INSERT 処理が走ると Collection に Document が登録されるが，Field に`_id`という固有の Field が追加される  
+これは完全に固有の値となり，従来だと連番で順番づけていたが，`_id`は競合することがない値となり、かつアクセスも早い
+
+これをマニュアル的につけることもできる
+
+```js
+const { ObjectID } = require("mongodb");
+
+const id = new ObjectID(); // Binary data
+console.log(id.id); // <Buffer xx xx xx ... xx xx xx>
+console.log(id.id.length); // 12
+console.log(id.toHexString()); // xxxxxxxxxxxxxxxxxxxxxxxx
+console.log(id.toHexString().length); // 24
+
+db.collection("users").insertOne(
+  {
+    _id: id,
+    name: "Tom",
+    age: 30,
+  },
+  (error, result) => {
+    if (error) {
+      return console.log("Unable to insert user.");
+    }
+
+    console.log(result.ops); // { _id: ObjectID(xxxx..xxxx), name: "Tom", age: 30 }
+  }
+);
+```
+
+### SELECT (FIND)
+
+```js
+// findOne (Single document)
+db.collection("users").findOne(
+  {
+    _id: ObjectID("5ed8fe5c42675f43e47a15d3"),
+  },
+  (error, result) => {
+    if (error) {
+      console.log("Unable to fetch from user.");
+    }
+
+    console.log(result); // { id..., name..., age... }
+  }
+);
+
+// find (Multiple document)
+db.collection("users")
+  .find({
+    age: 27,
+  })
+  .toArray((error, users) => {
+    console.log(users); // [ { ... }, { ... } ]
+  });
+
+db.collection("users")
+  .find({
+    age: 27,
+  })
+  .count((error, count) => {
+    console.log(count); // 2
+  });
+```
