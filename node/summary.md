@@ -272,6 +272,51 @@ Hello
 関数は呼び出し時に `Call Stack` に 追加され、実行が終わったら除去されるが、`setTimeout` 関数は `Callback Queue` に入り、`Call Stack` に最初に入る `main` スタック(main 関数)が除去されるまで待ち続け、終わり次第 `Event Loop` によって `Call Stack` に追加されるようになっている  
 なので、`main` スタックが終了するタイミングである、`console.log("Hello");` が終わった時点で、`setTimeout` が `Call Stack` に入り、実行された
 
+## Promise
+
+Promise は， `new Promise()` で Promise オブジェクトを作成し，引数に `resolve` と `reject` を引数に持つ Callback を設定する  
+`resolve` と `reject` は実際は関数で，この関数の引数に値を与えることで，後述の `then` または `catch` に引き渡される
+
+`resolve` は処理が成功したときに使う  
+`resolve(result)` と置くだけで， Promise オブジェクトのメソッドチェーンでアクセスできる `then` からアクセスすることができる
+
+`reject` は処理が失敗したときに使う  
+`reject(error)` と置くだけで， Promise オブジェクトのメソッドチェーンでアクセスできる `catch` からアクセスすることができる
+
+```js
+// Using callback
+const workCallback = (callback) => {
+  setTimeout(() => {
+    // callback("Error", undefined);
+    callback(undefined, [1, 4, 7]);
+  }, 2000);
+};
+
+workCallback((error, result) => {
+  if (error) {
+    return console.log(error);
+  }
+
+  console.log(`Result is ${result}`);
+});
+
+// Using promise
+const workPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve([7, 4, 1]);
+    reject("Error");
+  }, 2000);
+});
+
+workPromise
+  .then((result) => {
+    console.log(`Result is ${result}`);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
 ## Design Pattern
 
 定義した関数に、匿名関数を渡し、その関数を実行してもらう  
