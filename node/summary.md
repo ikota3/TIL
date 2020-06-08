@@ -669,3 +669,40 @@ db.collection("users")
     console.log(error);
   });
 ```
+
+## Mongoose
+
+### Connect
+
+```js
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://127.0.0.1:27017/task-manager", {
+  useNewUrlParse: true,
+  useUnifiedTopology: true,
+});
+```
+
+### INSERT
+
+```js
+// Defining a model
+const Task = mongoose.model("Task", {
+  description: String,
+  isCompleted: Boolean,
+});
+
+// Setting a value using the Task model
+const firstTask = new Task({
+  description: "This is my first task.",
+  isCompleted: false,
+});
+// Insert. save method returns a Promise object
+firstTask
+  .save()
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
