@@ -14,33 +14,4 @@ MongoClient.connect(connURL, { useUnifiedTopology: true }, (error, client) => {
 
   console.log("Connected correctly.");
   const db = client.db(dbName);
-
-  // db.collection("users").findOne(
-  //   {
-  //     _id: ObjectID("5ed8fe5c42675f43e47a15d3"),
-  //   },
-  //   (error, user) => {
-  //     if (error) {
-  //       return console.log("Unable to fetch from user.");
-  //     }
-
-  //     console.log(user);
-  //   }
-  // );
-
-  db.collection("users")
-    .find({
-      age: 27,
-    })
-    .toArray((error, users) => {
-      console.log(users);
-    });
-
-  db.collection("users")
-    .find({
-      age: 27,
-    })
-    .count((error, users) => {
-      console.log(users);
-    });
 });

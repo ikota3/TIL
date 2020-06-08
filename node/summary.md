@@ -595,3 +595,73 @@ db.collection("users")
     console.log(count); // 2
   });
 ```
+
+### UPDATE
+
+```js
+// Single update (Using Promise)
+db.collection("users")
+  .updateOne(
+    {
+      age: false,
+    },
+    {
+      $set: {
+        age: true,
+      },
+    }
+  )
+  .then((result) => {
+    console.log(result.modifiedCount);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// Multiple update (Using Promise)
+db.collection("users")
+  .updateMany(
+    {
+      age: false,
+    },
+    {
+      $set: {
+        age: true,
+      },
+    }
+  )
+  .then((result) => {
+    console.log(result.modifiedCount);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
+### DELETE
+
+```js
+// Single delete (Using Promise)
+db.collection("users")
+  .deleteOne({
+    _id: ObjectID("5ed8f4bd3a2e7520747698ff"),
+  })
+  .then((result) => {
+    console.log(result.deletedCount);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// Multiple delete (Using Promise)
+db.collection("users")
+  .deleteMany({
+    age: true,
+  })
+  .then((result) => {
+    console.log(result.deletedCount);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
