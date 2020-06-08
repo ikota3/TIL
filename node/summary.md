@@ -38,7 +38,7 @@ REPL モードで起動
 
   現在開発している物に対してだけにパッケージを使えるようにするには、`npm i packageName` が適しているが、どのようなプロジェクトに対してもこれは使えるようにしたい場合は、上記のコマンドが有用だ
 
-* `npm install`
+- `npm install`
 
   上の一文だけで、パッケージインストール時に生成される `package-lock.json` や `package.json` のファイルから依存関係を読み取り、必要なパッケージを自動的にインストールすることが出来る  
   他のプロジェクトをクローンしたときなどに有用
@@ -352,7 +352,7 @@ func("argument", (errorMessage, result) => {
 
 ## Heroku
 
-https://devcenter.heroku.com/articles/heroku-cli#download-and-install
+<https://devcenter.heroku.com/articles/heroku-cli#download-and-install>
 
 - Installing on ubuntu
 
@@ -409,6 +409,7 @@ https://devcenter.heroku.com/articles/heroku-cli#download-and-install
   ```
 
 - Push to heroku
+
   ```bash
   git push heroku master
   ```
@@ -426,8 +427,10 @@ https://devcenter.heroku.com/articles/heroku-cli#download-and-install
     |12|Tom|example@email.com|1234|
 
 - No SQL
+
   - The data is stored in a Collection.  
     Each data is a Document and the data identifiers are called Field.
+
     ```json
     [
       {
@@ -442,6 +445,7 @@ https://devcenter.heroku.com/articles/heroku-cli#download-and-install
 ### Run
 
 - PowerScript
+
   ```ps1
   > C:\MongoDB\bin\mongod.exe --dbpath="C:\MongoDB_data\"
   ```
