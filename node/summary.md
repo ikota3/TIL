@@ -478,7 +478,7 @@ MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
 });
 ```
 
-### INSERT
+### Insert
 
 ```js
 // insertOne (Insert one document only)
@@ -565,7 +565,7 @@ db.collection("users").insertOne(
 );
 ```
 
-### SELECT (FIND)
+### Select (Find)
 
 ```js
 // findOne (Single document)
@@ -600,7 +600,7 @@ db.collection("users")
   });
 ```
 
-### UPDATE
+### Update
 
 ```js
 // Single update (Using Promise)
@@ -642,7 +642,7 @@ db.collection("users")
   });
 ```
 
-### DELETE
+### Delete
 
 ```js
 // Single delete (Using Promise)
@@ -682,7 +682,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/task-manager", {
 });
 ```
 
-### INSERT
+### Insert
 
 ```js
 // Defining a model
@@ -705,4 +705,41 @@ firstTask
   .catch((error) => {
     console.log(error);
   });
+```
+
+#### Validate
+
+```js
+const validator = require("validator");
+
+const User = mongoose.model("User", {
+  // name: required, trim
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  // age: set default value to 0, and validate the value is a number
+  age: {
+    type: Number,
+    default: 0,
+    validate(value) {
+      if (value < 0) {
+        throw new Error("The age must be a positive number.");
+      }
+    },
+  },
+  // email: required, trim, convert to lowercase, and validate the value is an email
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error("Email is invalid.");
+      }
+    },
+  },
+});
 ```
