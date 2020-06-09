@@ -93,6 +93,8 @@ const express = require("express");
 const app = express();
 
 // 設定を行う
+// JSONデータを受け取りたいとき
+app.use(express.json());
 // CSSファイルやJSファイルなどの静的なファイルを格納するフォルダを指定する
 app.use(express.static("pathToStaticDirectory"));
 // HBSを使用したHTML描画を行うことを指定する
