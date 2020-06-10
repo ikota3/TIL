@@ -103,8 +103,8 @@ app.set("view engine", "hbs");
 // VIEW(HTMLやHBSなど)を置く場所
 app.set("views", "pathToViewsDirectory");
 
-// URLマッピング
 // localhost:8080
+// GETリクエストが投げられたとき，実行される
 app.get("", (req, res) => {
   console.log(req.query.key); // value from localhost:8080?key=value
   res.render("fileNameExcludingExtension", {
@@ -116,6 +116,16 @@ app.get("", (req, res) => {
 app.get("*", (req, res) => {
   res.send("This url is not available.");
 });
+
+// POSTリクエストが投げられたとき，実行される
+app.post("/fruits", (req, res) => {
+  // Something to do
+});
+
+// REST形式パラメータを受け取る
+app.post("/fruits/:kind", (req, res)) {
+  console.log(req.params.kind);
+}
 
 // 8080でポートを開く
 app.listen(8080, () => {
@@ -744,4 +754,37 @@ const User = mongoose.model("User", {
     },
   },
 });
+```
+
+### Select (Find)
+
+```js
+const Task = mongoose.model("Task", {
+  description: String,
+  isCompleted: Boolean,
+});
+
+// Select All data in Task
+Task.find({})
+  .then((tasks) => {
+    console.log(tasks);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+
+// Select data by _id
+const id = "xxxxxx...";
+Task.findById(id)
+  .then((task) => {
+    if (!task) {
+      return console.log(
+        "Select statement was executed, but the data doesn't exist."
+      );
+    }
+    console.log(task);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
 ```
