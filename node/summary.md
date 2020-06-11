@@ -329,6 +329,33 @@ workPromise
   });
 ```
 
+### Promise Chaining
+
+Promise でのネストを抑えるために，チェーンにして防ぐ  
+`return` で Promise オブジェクトを返すことで，`.then()` から， Promise オブジェクトの結果を取得できる
+
+```js
+const add = (a, b) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(a + b);
+    }, 2000);
+  });
+};
+
+add(1, 2)
+  .then((sum) => {
+    console.log(sum); // 3
+    return add(sum, 10); // Returning a promise object
+  })
+  .then((sum) => {
+    console.log(sum); // 13
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+```
+
 ## Design Pattern
 
 定義した関数に、匿名関数を渡し、その関数を実行してもらう  
