@@ -356,9 +356,47 @@ add(1, 2)
   });
 ```
 
+## async/await
+
+Promise を使ったやり方では，メソッドチェーンで変数にアクセスすることは出来るが，変数のスコープが分かりづらく，チェーン間でのアクセスは可能ではあるが可読性には欠ける  
+それを防ぐ方法として，`async` と `await` を使うことで，共通のブロック内で複数の非同期処理を書くことが出来る
+
+```js
+const doWork = async () => {
+  return "something";
+};
+
+console.log(doWork); // Promise{ "something" }
+
+doWork().then((result) => {
+  console.log(result); // something
+});
+
+const add = (a, b) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (a < 0 || b < 0) {
+        return reject("Numbers must be negative");
+      }
+      resolve(a + b);
+    }, 2000);
+  });
+};
+
+const addWork = async () => {
+  const sum1 = await add(1, 2); // calculate 2 seconds ago
+  const sum2 = await add(1, sum1); // calculate 4 seconds ago
+  const sum3 = await add(-1, sum2); // calculate failed, throw an error
+};
+
+addWork().catch((e) => {
+  console.log(e); // Numbers must be negative
+});
+```
+
 ## Design Pattern
 
-定義した関数に、匿名関数を渡し、その関数を実行してもらう  
+定義した関数に、匿名関数を渡し、その関数を実行してもらう
 入力値を渡し、出力値を匿名関数に引き渡す
 
 ```js
