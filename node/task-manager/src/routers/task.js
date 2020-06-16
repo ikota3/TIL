@@ -1,5 +1,6 @@
 const express = require("express");
 const Task = require("../models/task");
+const { update } = require("../models/task");
 const router = new express.Router();
 
 router.post("/tasks", async (req, res) => {
@@ -48,12 +49,16 @@ router.patch("/tasks/:id", async (req, res) => {
     return res.status(400).send({ error: "Invalid updates!" });
   }
 
-  const id = req.params.id;
   try {
-    const task = await Task.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      res.status(404).send();
+    }
+
+    updateKeys.forEach((updateKey) => (task[updateKey] = req.body[updateKey]));
+    await task.save();
+
+    // XXX いる？
     if (!task) {
       res.status(404).send();
     }
