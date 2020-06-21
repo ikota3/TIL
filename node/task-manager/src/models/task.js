@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const taskSchema = new mongoose.Schema({
   description: {
@@ -11,14 +10,12 @@ const taskSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
 });
-
-// taskSchema.pre("save", async function (next) {
-//   const task = this;
-//   if (task.isModified("password")) {
-//     task.
-//   }
-// });
 
 const Task = mongoose.model("Task", taskSchema);
 

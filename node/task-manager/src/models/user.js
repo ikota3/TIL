@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Task = require("./task");
 
 const userSchema = mongoose.Schema({
   name: {
@@ -51,6 +52,18 @@ const userSchema = mongoose.Schema({
   ],
 });
 
+/**
+ * Virtual reference for link user id to task owner field
+ */
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "owner",
+});
+
+/**
+ * Generate token for authorization.
+ */
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, "thisIsSecret");
@@ -61,6 +74,9 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+/**
+ * Override toJSON method for hiding personal data.
+ */
 userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
 
@@ -70,6 +86,11 @@ userSchema.methods.toJSON = function () {
   return userObject;
 };
 
+/**
+ * Check the email and the password is invalid or not.
+ * @param {string} email
+ * @param {string} password
+ */
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
@@ -84,7 +105,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
-// Hash the plain text before saving the password
+/**
+ * Hash the plain password text before saving to the database.
+ */
 userSchema.pre("save", async function (next) {
   const user = this;
 
@@ -92,6 +115,15 @@ userSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, 8);
   }
 
+  next();
+});
+
+/**
+ * Delete user tasks when user is removed from the database.
+ */
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Task.deleteMany({ owner: user._id });
   next();
 });
 
