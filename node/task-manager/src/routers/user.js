@@ -20,6 +20,36 @@ router.post("/users/login", async (req, res) => {
 });
 
 /**
+ * LOGOUT
+ */
+router.post("/users/logout", auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+    await req.user.save();
+
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
+/**
+ * LOGOUT ALL
+ */
+router.post("/users/logoutAll", auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
+/**
  * CREATE USER
  */
 router.post("/users", async (req, res) => {
@@ -40,7 +70,7 @@ router.post("/users", async (req, res) => {
  * GET AUTHENTICATED USER
  */
 router.get("/users/me", auth, async (req, res) => {
-  res.send(req.user)
+  res.send(req.user);
 });
 
 /**
