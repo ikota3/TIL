@@ -13,9 +13,9 @@ const app = express();
 //   next();
 // });
 
-app.use((req, res, next) => {
-  res.status(503).send("Maintenance mode");
-});
+// app.use((req, res, next) => {
+//   res.status(503).send("Maintenance mode");
+// });
 
 app.use(express.json());
 app.use(userRouter);

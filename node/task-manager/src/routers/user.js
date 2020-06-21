@@ -1,7 +1,11 @@
 const express = require("express");
 const User = require("../models/user");
+const auth = require("../middleware/auth");
 const router = new express.Router();
 
+/**
+ * LOGIN
+ */
 router.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
@@ -15,6 +19,9 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
+/**
+ * CREATE USER
+ */
 router.post("/users", async (req, res) => {
   if (req.body) {
     const user = new User(req.body);
@@ -29,15 +36,16 @@ router.post("/users", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.status(200).send(users);
-  } catch (e) {
-    res.status(500).send();
-  }
+/**
+ * GET AUTHENTICATED USER
+ */
+router.get("/users/me", auth, async (req, res) => {
+  res.send(req.user)
 });
 
+/**
+ * GET USER BY ID
+ */
 router.get("/users/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -51,6 +59,9 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
+/**
+ * UPDATE USER BY ID
+ */
 router.patch("/users/:id", async (req, res) => {
   const updateKeys = Object.keys(req.body);
   const allowedKeys = ["name", "email", "password", "age"];
@@ -80,6 +91,9 @@ router.patch("/users/:id", async (req, res) => {
   }
 });
 
+/**
+ * DELETE USER BY ID
+ */
 router.delete("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
