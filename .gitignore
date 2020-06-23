@@ -141,3 +141,4 @@ token.txt
 playground/
 *.png
 typescript/**/*.js
+sendgrid.env
