@@ -465,6 +465,24 @@ func("argument", (errorMessage, result) => {
   heroku create "applicationNameWhichIsUnique"
   ```
 
+- Adding environment variable
+
+  ```bash
+  heroku config:set ${key}=${value}
+  ```
+
+- Removing environment variable
+
+  ```bash
+  heroku config:unset ${key}
+  ```
+
+- Check the environment variables
+
+  ```bash
+  heroku config
+  ```
+
 - Setting up stating command
 
   package.json(Using node)
