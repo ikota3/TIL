@@ -141,4 +141,4 @@ token.txt
 playground/
 *.png
 typescript/**/*.js
-sendgrid.env
+node/task-manager/config/dev.env
