@@ -133,6 +133,8 @@ class EmailSenderView(Frame):
             self.login_success_label['text'] = 'Logged In!'
             self.master.after(10, self.master.grid)
             self.login_frame.pack_forget()
+            self.master.after(10, self.master.grid)
+            self.logged_in_subject_frame.pack()
             self.lab.grid_remove()
             self.master.after(10, self.master.grid)
 
