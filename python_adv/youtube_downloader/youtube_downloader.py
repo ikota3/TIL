@@ -1,6 +1,7 @@
 from numpy.lib.npyio import save
 from pytube import YouTube
 from tkinter import Button, Entry, Radiobutton, StringVar, Tk, Frame, Label, Toplevel, filedialog
+from tkinter import ttk
 import os
 import re
 import threading
@@ -16,7 +17,7 @@ DOWNLOAD_TYPES = [
 class DownloaderView(Frame):
     def __init__(self) -> None:
         super().__init__()
-        self.link_var = StringVar()
+        self.download_link_var = StringVar()
         self.download_type_var = StringVar()
         self.download_type_var.set("1")
         self.save_location_var = StringVar()
@@ -47,7 +48,7 @@ class DownloaderView(Frame):
         Entry(
             self.master,
             width=70,
-            textvariable=self.link_var,
+            textvariable=self.download_link_var,
             font=(FONT, 20)
         ).grid(pady=(0, 15), ipady=2)
 
@@ -105,8 +106,8 @@ class DownloaderView(Frame):
     def _download(self):
         # Download link valid check
         link_is_valid = re.match(
-            '^https://youtube.com/.',
-            self.link_var.get()
+            r'^https://www\.youtube\.com/.+',
+            self.download_link_var.get()
         )
         if not link_is_valid:
             self.entry_error_label.config(
@@ -133,15 +134,18 @@ class DownloaderView(Frame):
             )
 
         # Download
-        # self.new_window = Toplevel(self.master)
-        # self.master.withdraw()
+        new_window = Toplevel(self.master)
+        self.master.withdraw()
+        new_window.state('zoomed')
+        new_window.grid_rowconfigure(0, weight=0)
+        new_window.grid_columnconfigure(0, weight=1)
 
-        # self.app = Download(
-        #     self.new_window,
-        #     self.link_var.get(),
-        #     self.save_location_var.get(),
-        #     self.download_type_var.get()
-        # )
+        SecondApp(
+            new_window,
+            self.download_link_var.get(),
+            self.download_type_var.get(),
+            self.save_location_var.get(),
+        )
 
 
 class DownloaderApp(Tk):
@@ -153,6 +157,53 @@ class DownloaderApp(Tk):
         self.grid_rowconfigure(0, weight=2)
         self.grid_columnconfigure(0, weight=1)
         DownloaderView()
+
+
+class SecondApp:
+    def __init__(self,
+                 download_window,
+                 download_link,
+                 download_type,
+                 save_location
+                 ) -> None:
+        self.download_window = download_window
+        self.download_link = download_link
+        self.download_type = download_type
+        self.save_location = save_location
+
+        self._test()
+
+    def _test(self):
+        yt = YouTube(self.download_link)
+        if self.download_type == '1':
+            video_type = yt.streams.filter(only_audio=True).first()
+            file_size = video_type.filesize
+        elif self.download_type == '2':
+            video_type = yt.streams.first()
+            file_size = video_type.filesize
+
+        Label(
+            self.download_window,
+            text='Downloading...',
+            font=(FONT, 40)
+        ).grid(pady=(100, 0))
+
+        self.progress_label = Label(
+            self.download_window,
+            text='0',
+            fg='red',
+            font=(FONT, 40)
+        )
+        self.progress_label.grid(pady=(50, 0))
+
+        self.progress_bar = ttk.Progressbar(
+            self.download_window,
+            length=500,
+            orient='horizontal',
+            mode='indeterminate'
+        )
+        self.progress_bar.grid(pady=(50, 0))
+        self.progress_bar.start()
 
 
 if __name__ == '__main__':
