@@ -1,4 +1,3 @@
-from numpy.lib.npyio import save
 from pytube import YouTube
 from tkinter import Button, Entry, Radiobutton, StringVar, Tk, Frame, Label, Toplevel, filedialog
 from tkinter import ttk
