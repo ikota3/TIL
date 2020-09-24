@@ -3,6 +3,7 @@ from tkinter import Button, Entry, Radiobutton, StringVar, Tk, Frame, Label, Top
 from tkinter import ttk
 import os
 import re
+import math
 import threading
 
 
@@ -132,14 +133,11 @@ class DownloaderView(Frame):
                 fg='black'
             )
 
-        # Download
+        # Download window
         new_window = Toplevel(self.master)
-        self.master.withdraw()
-        new_window.state('zoomed')
         new_window.grid_rowconfigure(0, weight=0)
         new_window.grid_columnconfigure(0, weight=1)
-
-        SecondApp(
+        DownloadWindow(
             new_window,
             self.download_link_var.get(),
             self.download_type_var.get(),
@@ -147,18 +145,7 @@ class DownloaderView(Frame):
         )
 
 
-class DownloaderApp(Tk):
-    def __init__(self) -> None:
-        super().__init__()
-        self.title('YouTube downloader')
-        # Full screen
-        self.state('zoomed')
-        self.grid_rowconfigure(0, weight=2)
-        self.grid_columnconfigure(0, weight=1)
-        DownloaderView()
-
-
-class SecondApp:
+class DownloadWindow:
     def __init__(self,
                  download_window,
                  download_link,
@@ -170,39 +157,119 @@ class SecondApp:
         self.download_type = download_type
         self.save_location = save_location
 
-        self._test()
+        self.yt = YouTube(self.download_link)
+        self.file_size = 0
 
-    def _test(self):
-        yt = YouTube(self.download_link)
+        self.start_download()
+
+    def start_download(self):
         if self.download_type == '1':
-            video_type = yt.streams.filter(only_audio=True).first()
-            file_size = video_type.filesize
-        elif self.download_type == '2':
-            video_type = yt.streams.first()
-            file_size = video_type.filesize
+            self.file_size = int(
+                self.yt.streams.filter(
+                    only_audio=True
+                ).first().filesize
+            )
 
-        Label(
+        elif self.download_type == '2':
+            self.file_size = int(
+                self.yt.streams.first().filesize
+            )
+
+        # Downloading label
+        self.downloading_label = Label(
             self.download_window,
             text='Downloading...',
             font=(FONT, 40)
-        ).grid(pady=(100, 0))
+        )
+        self.downloading_label.grid(pady=25)
 
+        # Downloading progress count label
         self.progress_label = Label(
             self.download_window,
             text='0',
             fg='red',
             font=(FONT, 40)
         )
-        self.progress_label.grid(pady=(50, 0))
+        self.progress_label.grid(pady=25)
 
+        # Downloading progress bar
         self.progress_bar = ttk.Progressbar(
             self.download_window,
             length=500,
             orient='horizontal',
             mode='indeterminate'
         )
-        self.progress_bar.grid(pady=(50, 0))
+        self.progress_bar.grid(pady=25)
         self.progress_bar.start()
+
+        # Set callback function for updating progress count and bar
+        threading.Thread(
+            target=self.yt.register_on_progress_callback(self.update_progress)
+        ).start()
+        # Download file
+        threading.Thread(target=self.download_file).start()
+
+    def download_file(self):
+
+        if self.download_type == '1':
+            self.yt.streams.filter(
+                only_audio=True
+            ).first().download(self.save_location)
+
+        elif self.download_type == '2':
+            self.yt.streams.first().download(self.save_location)
+
+    def update_progress(self,
+                        streams: object,
+                        chunks: bytes,
+                        bytes_remaining: int):
+
+        current_progress = math.floor(
+            100 - (100 * (bytes_remaining / self.file_size))
+        )
+        if current_progress < 100:
+            # update progress while lower than 100
+            self.progress_label.config(text=f'{current_progress} %')
+        else:
+            # stop progress. and update window
+            self.progress_bar.stop()
+            self.downloading_label.grid_forget()
+            self.progress_label.grid_forget()
+            self.progress_bar.grid_forget()
+
+            # download finished label
+            Label(
+                self.download_window,
+                text='Download finished!',
+                font=(FONT, 30)
+            ).grid(pady=25)
+
+            # display downloaded file name
+            Label(
+                self.download_window,
+                text=self.yt.title,
+                font=(FONT, 30)
+            ).grid(pady=25)
+
+            # calculate byte to megabyte
+            MB = f'{math.floor(self.file_size / 1024 / 1024)} MB'
+            # display downloaded file size
+            Label(
+                self.download_window,
+                text=MB,
+                font=(FONT, 30)
+            ).grid(pady=25)
+
+
+class DownloaderApp(Tk):
+    def __init__(self) -> None:
+        super().__init__()
+        self.title('YouTube downloader')
+        # Full screen
+        self.state('zoomed')
+        self.grid_rowconfigure(0, weight=2)
+        self.grid_columnconfigure(0, weight=1)
+        DownloaderView()
 
 
 if __name__ == '__main__':
