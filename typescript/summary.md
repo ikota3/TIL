@@ -1,9 +1,67 @@
 # TypeScript
 
-## Compile
+## Compiler options
 
-```
+### Compile
+
+```bash
 tsc ${filename}
+```
+
+### Compile on watch mode
+
+```bash
+tsc ${filename} -w
+```
+
+```bash
+tsc ${filename} --watch
+```
+
+### Configuration file
+
+```bash
+# Make a configuration file for TypeScript
+tsc --init
+> message TS6071: Successfully created a tsconfig.json file.
+
+# Compile all ts files
+tsc
+```
+
+#### tsconfig.json
+
+##### include
+
+コンパイル対象に含める
+
+```json
+"include" :[
+  "sample.ts"
+]
+```
+
+##### exclude
+
+コンパイル対象から除外する
+
+```json
+"exclude" :[
+  "node_modules"
+  "sample.ts",
+  "**/sample.ts",
+  "*.ts",
+]
+```
+
+##### files
+
+exclude でコンパイル対象から除外していても，コンパイル対象に含める
+
+```json
+"files": [
+  "sample.ts"
+]
 ```
 
 ## Type
