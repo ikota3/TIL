@@ -64,6 +64,116 @@ exclude でコンパイル対象から除外していても，コンパイル対
 ]
 ```
 
+##### compilerOptions
+
+###### target
+
+`es6` などのコンパイルされるバージョンを指定する．
+
+```json
+"compilerOptions": {
+  "target": "es6"
+}
+```
+
+###### lib
+
+コンパイル時に，どのライブラリを使ってコンパイルを行うかを指定する．
+
+```json
+"compilerOptions": {
+  "lib": [
+    "ES6",
+    "DOM",
+    "DOM.Iterable",
+    "ScriptHost"
+  ]
+}
+```
+
+###### allowJs
+
+コンパイル対象に JavaScript のコードも含めるようにする．
+
+```json
+"compilerOptions": {
+  "allowJs": true
+}
+```
+
+###### checkJs
+
+JavaScript のコードにエラーがないかをチェックする．
+
+```json
+"compilerOptions": {
+  "checkJs": true
+}
+```
+
+###### declaration, declarationMap
+
+TypeScript の型情報を生成する．
+
+```json
+"compilerOptions": {
+  "declaration": true,
+  "declarationMap": true,
+}
+```
+
+###### sourceMap
+
+コンパイルされた JavaScript ファイルから，TypeScript に変換されたファイルを閲覧できるようにする．
+
+```json
+"compilerOptions": {
+  "sourceMap": true
+}
+```
+
+###### outDir
+
+コンパイルした JavaScript ファイルを指定したディレクトリに配置させる．
+
+```json
+"compilerOptions": {
+  "outDir": "./dist"
+}
+```
+
+###### rootDir
+
+`outDir` で指定したディレクトリにコンパイル後のファイルが格納されるが，`rootDir` を設定していない状態で行うと最も構成が少なく済む方法で出力を行う．  
+そのため，複数のディレクトリにネストしてファイルが格納されていると，`outDir` で指定したディレクトリにはネストしたディレクトリは格納されず，コンパイルされたファイルだけが格納される．  
+これを防ぐために `rootDir` を設定すると，ネストされたディレクトリも出力するようにできる．
+
+```json
+"compilerOptions": {
+  "rootDir": "./"
+}
+```
+
+###### removeComments
+
+コメントをコンパイル時に出力するかしないかを設定する．
+
+```json
+"compilerOptions": {
+  "removeComments": true
+}
+```
+
+###### noEmit
+
+何も出力しないかを設定する．
+
+```json
+"compilerOptions": {
+  "noEmits": true
+}
+```
+
 ## Type
 
 ### Type Annotation
