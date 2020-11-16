@@ -47,7 +47,7 @@ tsc
 
 ```json
 "exclude" :[
-  "node_modules"
+  "node_modules",
   "sample.ts",
   "**/sample.ts",
   "*.ts",
@@ -506,3 +506,292 @@ function errorOccurred(message: string): never {
 
 console.log(errorOccurred("ERR-01-01"));
 ```
+
+## Class
+
+- `public`, `constructor`, `this`
+
+  ```ts
+  class Person {
+    public name: string;
+
+    constructor(name: string) {
+      this.name = name;
+    }
+
+    // thisがこのPersonオブジェクトを指しているのか
+    // それとも呼び出し側のオブジェクトを指しているのかの2通り考えられ，エラーが検知されない
+    greeting() {
+      console.log(`Hello! My name is ${this.name}.`);
+    }
+
+    // thisの型情報を加えることで，呼び出したときにエラーであることを検知できる
+    greetingWithTypeDef(this: { name: string }) {
+      console.log(`Hello! My name is ${this.name}.`);
+    }
+
+    // アロー関数の場合，thisは定義時に決まるため，常に生成したインスタンスのnameが使用される
+    // ただ，アロー関数はパフォーマンスが落ちるため，極力使用しない
+    greetingWithArrow = () => {
+      console.log(`Hello! My name is ${this.name}.`);
+    };
+
+    // thisの型情報をPersonの型のみに限定させる
+    // オブジェクトにセットして呼び出すには，Personクラスの全てをセットする必要がある
+    greetingWithClassTypeDef(this: Person) {
+      console.log(`Hello! My name is ${this.name}.`);
+    }
+  }
+
+  const person: Person = new Person("Tom");
+  person.greeting(); // Hello! My name is Tom.
+
+  // nameフィールドがない
+  const secondPerson = {
+    greeting: person.greeting,
+  };
+  secondPerson.greeting(); // Hello! My name is undefined.
+
+  // nameフィールドを設けた
+  const thirdPerson = {
+    name: "Bob",
+    greeting: person.greeting,
+  };
+  thirdPerson.greeting(); // Hello! My name is Bob.
+
+  // 事前にエラーが検知される かつ コンパイルエラーが発生する
+  // const fourthPerson = {
+  //   greeting: person.greetingWithTypeDef,
+  // };
+  // fourthPerson.greeting();
+
+  // nameフィールドを設けているため，エラーにならない
+  const fifthPerson = {
+    name: "Josh",
+    greeting: person.greetingWithTypeDef,
+  };
+  fifthPerson.greeting(); // Hello! My name is Josh.
+
+  // thisはPersonの型であるため，Personクラスにある全てを設けなくてはいけない
+  // 全てとは，フィールド変数，メソッド
+  const sixthPerson = {
+    name: "Lisa",
+    greeting: person.greetingWithClassTypeDef,
+    greetingWithTypeDef() {},
+    greetingWithArrow() {},
+    greetingWithClassTypeDef() {},
+  };
+  sixthPerson.greeting();
+  ```
+
+- `private`
+
+  ```ts
+  class Person {
+    private age: number;
+
+    constructor(age: number) {
+      this.age = age;
+    }
+
+    printAge(this: Person) {
+      console.log(`My age is ${this.age}`);
+    }
+  }
+
+  const person: Person = new Person(100);
+  // person.age = 100000; アクセス不可
+  person.printAge();
+  ```
+
+- `initialize` (sugar syntax)
+
+  ```ts
+  class Person {
+    constructor(public name: string, private age: number) {}
+
+    greeting(this: Person) {
+      console.log(`name: ${this.name}, age: ${this.age}`);
+    }
+  }
+
+  const person: Person = new Person("Tom", 100);
+  person.greeting(); // name: Tom, age: 100
+  ```
+
+- `readonly`
+
+  ```ts
+  class Person {
+    constructor(
+      public readonly name: string,
+      private readonly age: number,
+      readonly id: number // public readonly id と同じ意味
+    ) {
+      // this.name = "Can Overwrite" 上書き可能
+    }
+
+    greeting(this: Person) {
+      // this.name = "Cannot Overwrite"; 上書き不可
+      console.log(`name: ${this.name}, age: ${this.age}`);
+    }
+  }
+
+  const person: Person = new Person("Tom", 100, 123456);
+  // person.name = 'Cannot Overwrite'; 上書き不可
+  person.greeting(); // name: Tom, age: 100
+  ```
+
+- `extends`
+
+  ```ts
+  class Person {
+    constructor(public name: string, private age: number) {}
+
+    greeting(this: Person) {
+      console.log(`name: ${this.name}, age: ${this.age}`);
+    }
+  }
+
+  class Teacher extends Person {
+    constructor(name: string, age: number, public subject: string) {
+      super(name, age);
+    }
+  }
+
+  const teacher = new Teacher("Tom", 30, "English");
+  teacher.greeting(); // name: Tom, age: 30
+  ```
+
+- `protected`
+
+  ```ts
+  class Person {
+    // ageをprotectedにした
+    constructor(public name: string, protected age: number) {}
+
+    greeting(this: Person) {
+      console.log(`name: ${this.name}, age: ${this.age}`);
+    }
+  }
+
+  class Teacher extends Person {
+    constructor(name: string, age: number, public subject: string) {
+      super(name, age);
+    }
+
+    greeting(this: Teacher) {
+      // this.ageがアクセス可能になる
+      console.log(
+        `name: ${this.name}, age: ${this.age}, subject: ${this.subject}`
+      );
+    }
+  }
+
+  const teacher: Teacher = new Teacher("Tom", 30, "English");
+  teacher.greeting(); // name: Tom, age: 30, subject: English
+  ```
+
+- `getter`, `setter`
+
+  ```ts
+  class Person {
+    constructor(public _name: string) {}
+
+    get name(): string {
+      return this._name;
+    }
+
+    set name(value: string) {
+      this._name = value;
+    }
+  }
+
+  const person: Person = new Person("Tom");
+  console.log(person.name); // Tom
+
+  person.name = "Bob";
+  console.log(person.name); // Bob
+  ```
+
+- `static`
+
+  ```ts
+  class Person {
+    static species: string = "Homo sapiens";
+    static isAdult(age: Number): boolean {
+      if (age > 17) {
+        return true;
+      }
+
+      return false;
+    }
+
+    constructor(public name: string) {}
+  }
+
+  console.log(Person.species); // Homo sapiens
+  console.log(Person.isAdult(17)); // false
+  ```
+
+- `Abstract`
+
+  ```ts
+  abstract class Person {
+    constructor(public name: string) {}
+
+    greeting(this: Person) {
+      console.log(`name: ${this.name}`);
+      this.explainJob();
+    }
+
+    abstract explainJob(): void;
+  }
+
+  class Teacher extends Person {
+    constructor(name: string, private subject: string) {
+      super(name);
+    }
+
+    explainJob(): void {
+      console.log(`subject: ${this.subject}`);
+    }
+  }
+
+  const teacher: Teacher = new Teacher("Tom", "Math");
+  teacher.greeting(); // name: Tom\nsubject: Math
+  ```
+
+- `private constructor` (Singleton)
+
+  ```ts
+  class Person {
+    constructor(public name: string) {}
+
+    greeting(this: Person) {
+      console.log(`name: ${this.name}`);
+    }
+  }
+
+  class Teacher extends Person {
+    private static instance: Teacher;
+
+    private constructor(name: string) {
+      super(name);
+    }
+
+    static getInstance(): Teacher {
+      if (Teacher.instance) {
+        return Teacher.instance;
+      }
+
+      Teacher.instance = new Teacher("Tom");
+      return Teacher.instance;
+    }
+  }
+
+  // const teacher: Teacher = new Teacher("Tom"); new でインスタンス作成不可
+  const teacherOne = Teacher.getInstance();
+  const teacherSecond = Teacher.getInstance();
+  console.log(teacherOne === teacherSecond); // true
+  ```
