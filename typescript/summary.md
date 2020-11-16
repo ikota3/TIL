@@ -166,11 +166,80 @@ TypeScript の型情報を生成する．
 
 ###### noEmit
 
-何も出力しないかを設定する．
+TypeScript の型チェックのみを行い，何も出力しないかを設定する．
 
 ```json
 "compilerOptions": {
   "noEmits": true
+}
+```
+
+###### noEmitOnError
+
+コンパイルエラーが起こったときに，コンパイルされたファイルらを出力しないようにする．
+
+```json
+"compilerOptions": {
+  "noEmitOnError": true
+}
+```
+
+###### downlevelIteration
+
+ES5，ES3 で`for-of`をコンパイルするときにつけるオプション．
+
+```json
+"compilerOptions": {
+  "downlevelIteration": true
+}
+```
+
+###### strict
+
+型チェックのオプションを全て有効にする．  
+対象のオプションは以下．
+
+```json
+"compilerOptions": {
+  "strict": true,
+  "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */
+  "strictNullChecks": true,              /* Enable strict null checks. */
+  "strictFunctionTypes": true,           /* Enable strict checking of function types. */
+  "strictBindCallApply": true,           /* Enable strict 'bind', 'call', and 'apply' methods on functions. */
+  "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+  "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
+  "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
+}
+```
+
+###### noUnusedLocals
+
+使っていないローカル変数にエラーを出すようにする．
+
+```json
+"compilerOptions": {
+  "noUnusedLocals": true
+}
+```
+
+###### noUnusedParameters
+
+使っていない引数にエラーを出すようにする．
+
+```json
+"compilerOptions": {
+  "noUnusedParameters": true
+}
+```
+
+###### noImplicitReturns
+
+暗黙的な戻り値にエラーを出すようにする．  
+全てのパターンに対して，戻り値があるように明示しなければならない．
+
+```json
+"compilerOptions": {
+  "noImplicitReturns": true
 }
 ```
 
