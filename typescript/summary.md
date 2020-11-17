@@ -795,3 +795,80 @@ console.log(errorOccurred("ERR-01-01"));
   const teacherSecond = Teacher.getInstance();
   console.log(teacherOne === teacherSecond); // true
   ```
+
+## Interface
+
+`interface` は，`type`と似たようなものだが，`type`は型定義をオブジェクトに対しても行えるのに対して，`interface`は**オブジェクトのみ**に対応している．
+
+```ts
+interface Human {
+  name: string;
+  age: number;
+  greeting(message: string): void;
+}
+
+const human: Human = {
+  name: "Tom",
+  age: 10,
+  greeting(message: string): void {
+    console.log(message);
+  },
+};
+```
+
+- `implements`
+
+  `interface`を使ってオブジェクトを事前に定義し，それを`implements`でクラスに対して適用することができる．
+
+  注意点として，`constructor`で定義しているフィールドは，`interface`で定義されているものに限っては`public`または`readonly`のみ適用可能．  
+  `private`，`protected`はエラーが発生する．
+
+  また，`interface`の代わりに`type`で定義しても，`implements`することが可能(ただし，オブジェクトを定義した場合のみ)
+
+  ```ts
+  interface Human {
+    name: string;
+    age: number;
+    greeting(message: string): void;
+  }
+
+  class Developer implements Human {
+    constructor(public name: string, public age: number) {}
+
+    greeting(message: string): void {
+      console.log(message);
+    }
+  }
+  ```
+
+- `readonly`
+
+  `interface`で定義したフィールドに対して`readonly`をつけていて，それを`implements`したクラスでのフィールドは`readonly`には**ならない**．
+
+  あくまで`interface`は設計図であり，強制的に定義されたフィールドをクラスで用意する必要はあるものの，`readonly`属性は影響しない．
+
+  そのため，下記のようにクラスの型で定義した変数にインスタンスを代入すると，その動作はクラスの型で定義されたものに準ずるものになり，`interface`の型で定義した変数にインスタンスを代入すると，またもその動作は`interface`で定義されたものに準ずるものになる．
+
+  ```ts
+  interface Human {
+    readonly name: string;
+    printName(this: Human): void;
+  }
+
+  class Developer implements Human {
+    constructor(public name: string) {}
+
+    printName(this: Developer): void {
+      console.log(this.name);
+    }
+  }
+
+  const developer: Developer = new Developer("Tom");
+  developer.printName(); // Tom
+  developer.name = "Bob"; // Developerクラスではpublicとなっており，変更可能
+  developer.printName(); // Bob
+
+  const human: Human = new Developer("Lisa");
+  human.printName(); // Lisa
+  human.name = "Olive"; // Humanインターフェイスはreadonlyとなっており，setできない コンパイルエラーが発生
+  ```
