@@ -936,3 +936,144 @@ const human: Human = {
     constructor(public name: string) {} // ageはなくてもいい
   }
   ```
+
+## Advanced
+
+- `&`
+
+  二つのオブジェクトで定義されているフィールドを合体させる．
+
+  ```ts
+  type Engineer = {
+    name: string;
+    role: string;
+  };
+
+  type Blogger = {
+    name: string;
+    follower: number;
+  };
+
+  type EngineerBlogger = Engineer & Blogger;
+
+  // Engineer，Bloggerで定義されている全てのフィールドを用意しなくてはならない
+  const engineerBlogger: EngineerBlogger = {
+    name: "Tom",
+    role: "back-end",
+    follower: 100000,
+  };
+  ```
+
+  以下のようにまたは条件を`&`で記述すると，どちらにも存在する number が評価される
+
+  ```ts
+  type NumberBoolean = number | boolean;
+  type StringNumber = string | number;
+
+  // (number | boolean) & (string | number)
+  // -> number
+  type Mix = NumberBoolean & StringNumber;
+  ```
+
+- タイプガード
+
+  型を確認することで，安全にアクセスできるようにする．
+
+  ```ts
+  function toUpperCase(x: string | number) {
+    if (typeof x === "string") {
+      // 変数xはstring型であると保障されたので，#toUpperCaseに安全にアクセスできる
+      return x.toUpperCase();
+    }
+    return "";
+  }
+  ```
+
+  オブジェクトのフィールドがあるかを確認することで，安全にアクセスできるようにする．
+
+  ```ts
+  type Engineer = {
+    name: string;
+    role: string;
+  };
+
+  type Blogger = {
+    name: string;
+  };
+
+  type EngineerBlogger = Engineer | Blogger;
+
+  function getRole(engineerBlogger: EngineerBlogger) {
+    if ("role" in engineerBlogger) {
+      // 変数engineerBloggerにroleがあると保障されたので，roleに安全にアクセスできる
+      return engineerBlogger.role;
+    }
+
+    return "";
+  }
+  ```
+
+  インスタンスを確認することで，安全にアクセスできるようにする．
+
+  ```ts
+  class Dog {
+    speak() {
+      console.log("bow");
+    }
+  }
+
+  class Bird {
+    speak() {
+      console.log("tweet");
+    }
+
+    fly() {
+      console.log("flutter");
+    }
+  }
+
+  type Pet = Dog | Bird;
+
+  function doPetBehavior(pet: Pet) {
+    pet.speak();
+    if (pet instanceof Bird) {
+      // 変数petはBirdインスタンスであることが保障されたので，#flyに安全にアクセスできる
+      pet.fly();
+    }
+  }
+  ```
+
+- タグ付き Union
+
+  フィールドにリテラル型のフィールドを置き，型の判別を分かりやすくする．
+
+  ```ts
+  class Dog {
+    kind: "dog" = "dog";
+  }
+
+  class Bird {
+    kind: "bird" = "bird";
+  }
+
+  type Pet = Dog | Bird;
+
+  function havePet(pet: Pet) {
+    switch (pet.kind) {
+      case "bird":
+      // do something
+      case "dog":
+      // do something
+    }
+  }
+  ```
+
+- 型アサーション
+
+  型を強制的に上書きし，アクセスしやすくする．  
+  ２通りの書き方がある．
+
+  ```ts
+  const input = <HTMLInputElement>document.getElementById("input");
+  const input = document.getElementById("input") as HTMLInputElement;
+  ```
