@@ -1077,3 +1077,35 @@ const human: Human = {
   const input = <HTMLInputElement>document.getElementById("input");
   const input = document.getElementById("input") as HTMLInputElement;
   ```
+
+- `!` (Non-null assertion operator)
+
+  これは`null`ではないと明示的に表現させる．
+
+  ```ts
+  function getNullOrString(): string | null {
+    return "string";
+  }
+
+  const a = getNullOrString()!;
+  ```
+
+- インデックスシグネチャ
+
+  ```ts
+  interface Designer {
+    name: string;
+    // これを追加することで，後からフィールドを追加することが可能になる
+    // ただ，string型のみしか宣言することが出来なくなる(ここにあるnameも含め)
+    // [index: 型] の型は，フィールドの型．stringのときは文字も数字も出来るが，
+    // numberのときは数字しか許容しない．
+    [index: string]: string;
+  }
+
+  const designer: Designer = {
+    name: "Tom",
+    role: "Manager", // ないフィールドを追加することが可能
+  };
+
+  designer.xxx = "xxx"; // 後から追加することも可能
+  ```
