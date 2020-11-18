@@ -872,3 +872,67 @@ const human: Human = {
   human.printName(); // Lisa
   human.name = "Olive"; // Humanインターフェイスはreadonlyとなっており，setできない コンパイルエラーが発生
   ```
+
+- `extends`
+
+  `interface`を`extends`して，定義したフィールドを継承することができる．
+
+  ```ts
+  interface Age {
+    age: number;
+  }
+
+  interface Human extends Age {
+    name: string;
+  }
+
+  class Developer implements Human {
+    constructor(public name: string, public age: number) {}
+  }
+  ```
+
+  継承先に同じ名前のフィールドがあったときは，似た型であれば上書き可能だが，違う型のときはコンパイルエラーが発生する．
+
+  ```ts
+  interface Age {
+    age: string;
+  }
+
+  interface Age2 extends Age {
+    // age: number; stringにnumberは代入不可能
+    age: string; // 同じ型のためエラーにはならない
+    age: "xyz"; // stringにリテラル型は代入可能のためエラーにはならない
+  }
+  ```
+
+- `interface`で関数を定義
+
+  本来は`type`で関数を定義するものだが，`interface`でも関数を定義することができる．
+
+  ```ts
+  // type add = (num1: number, num2: number) => number; typeで関数を定義
+  // interfaceで関数を定義
+  interface add {
+    (num1: number, num2: number): number;
+  }
+
+  let addFunc: add;
+  addFunc = (x: number, y: number) => {
+    return x + y;
+  };
+  ```
+
+- `?`(オプショナルパラメータ)
+
+  変数名，関数名，引数名の直後に`?`をつけることで，**なくてもいい**という状態を作る．
+
+  ```ts
+  interface Human {
+    name: string;
+    age?: number;
+  }
+
+  class Designer implements Human {
+    constructor(public name: string) {} // ageはなくてもいい
+  }
+  ```
