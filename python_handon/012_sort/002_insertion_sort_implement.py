@@ -9,20 +9,19 @@ import random
 
 def insertion_sort(input_array):
     array = input_array.copy()
-    for i in range(len(array)):
-        tmp = array[i]
-        j = i - 1
-        while (j >= 0) and (array[j] > tmp):
-            # i番目の要素から後ろを見ていく
-            # 後ろの要素とi番目の要素を比較したとき、i番目の要素のほうが小さいときは、i番目の要素を後ろに移動させていく
-
-            # 一つ上の要素(tmp)に移動
-            # 右にシフトさせる
-            array[j + 1] = array[j]
-            # jをデクリメントする
-            j -= 1
-        # jには、上記のwhileでソートしたときの先頭部分のインデックスが格納される
-        array[j + 1] = tmp
+    for current_index in range(len(array)):
+        tmp = array[current_index]
+        behind_index = current_index - 1
+        while (behind_index >= 0) and (array[behind_index] > tmp):
+            # 現在処理中のcurrent_index番目の要素から、後ろの要素と比較を行いながら見ていく
+            # 後ろの要素と現在処理中の要素を比較したとき、
+            # 現在処理中の要素のほうが小さいときは、現在処理中の要素を後ろの要素の前に移動させるために、
+            # 後ろの要素を右にシフトさせる
+            array[behind_index + 1] = array[behind_index]
+            # ひとつ前の後ろの要素にアクセスするために、デクリメントする
+            behind_index -= 1
+        # 上記のwhile分でシフトを終えたら、現在処理中の要素を先頭(while文でシフトを終えた後の要素)に移動
+        array[behind_index + 1] = tmp
 
     return array
 
